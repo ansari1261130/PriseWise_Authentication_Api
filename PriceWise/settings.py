@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-049xf^j6x1v%y*=9!l03h$q8r7pbo!r#s$k#4p@h0vs7codts2
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["prisewise-authentication-api.onrender.com", "localhost"]
 
 
 # Application definition
