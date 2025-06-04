@@ -8,14 +8,14 @@ from .models import User
 from .utils import Util
 
 
-# Registration Serializer
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(write_only=True, style={'input_type': 'password'})
     terms_conditions = serializers.BooleanField()
+    name = serializers.CharField(required=True)  # <-- Add this line
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'password2', 'terms_conditions']
+        fields = ['username', 'email', 'name', 'password', 'password2', 'terms_conditions']  # include name here
         extra_kwargs = {
             'password': {'write_only': True, 'style': {'input_type': 'password'}},
             'email': {'required': True},
@@ -36,7 +36,6 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         return User.objects.create_user(**validated_data)
 
 
-# Login Serializer
 class UserLoginSerializer(serializers.Serializer):
     email = serializers.EmailField(required=False)
     username = serializers.CharField(required=False)
@@ -67,7 +66,6 @@ class UserLoginSerializer(serializers.Serializer):
         return data
 
 
-# Profile Serializer
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -78,7 +76,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
         }
 
 
-# Change Password Serializer
 class UserChangePasswordSerializer(serializers.Serializer):
     password = serializers.CharField(max_length=255, style={'input_type': 'password'}, write_only=True)
     password2 = serializers.CharField(max_length=255, style={'input_type': 'password'}, write_only=True)
@@ -95,7 +92,6 @@ class UserChangePasswordSerializer(serializers.Serializer):
         return data
 
 
-# Send Password Reset Email Serializer
 class SendPasswordResetEmailSerializer(serializers.Serializer):
     email = serializers.EmailField(max_length=255)
 
@@ -109,7 +105,6 @@ class SendPasswordResetEmailSerializer(serializers.Serializer):
         token = PasswordResetTokenGenerator().make_token(user)
         link = f'http://localhost:3000/api/user/reset/{uid}/{token}'
 
-        # Prepare and send email
         body = f'Click the link to reset your password: {link}'
         data = {
             'subject': 'Reset Your Password',
@@ -121,7 +116,6 @@ class SendPasswordResetEmailSerializer(serializers.Serializer):
         return attrs
 
 
-# Reset Password (using uid/token from URL)
 class UserResetPasswordSerializer(serializers.Serializer):
     password = serializers.CharField(max_length=255, style={'input_type': 'password'}, write_only=True)
     password2 = serializers.CharField(max_length=255, style={'input_type': 'password'}, write_only=True)
